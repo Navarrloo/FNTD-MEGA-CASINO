@@ -1,5 +1,6 @@
 
 
+
 import React, { useState, useMemo, createContext, useEffect, useCallback } from 'react';
 import { useTelegram } from './hooks/useTelegram';
 import { ADMIN_USERNAMES, STARTING_BALANCE, UNITS } from './constants';
@@ -36,7 +37,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const checkConnection = async () => {
       if (!supabase) {
-        console.error("Supabase client is not initialized. Check environment variables.");
+        console.error("Supabase client is not initialized. Check lib/supabase.ts");
         setDbStatus('error');
         return;
       }
@@ -49,7 +50,8 @@ const App: React.FC = () => {
         // or a missing table, mean the server is reachable.
         const isFatalError = 
             error.message.includes('Failed to fetch') || 
-            error.message.includes('JWT');
+            error.message.includes('JWT') ||
+            error.message.includes('Invalid API key');
         
         if (isFatalError) {
            console.error("Supabase connection error:", error.message);
@@ -189,12 +191,12 @@ const App: React.FC = () => {
         return (
              <div className="p-4 flex items-center justify-center h-full">
                <div className="pixel-border bg-red-900/50 max-w-md text-center border-red-500">
-                <h1 className="font-pixel text-2xl text-accent-red mb-4">DATABASE CONNECTION FAILED</h1>
+                <h1 className="font-pixel text-2xl text-accent-red mb-4">DATABASE CONFIGURATION ERROR</h1>
                 <p className="text-text-light text-lg">
                   Could not connect to the Supabase database.
                 </p>
                 <p className="mt-2 text-text-dark text-base">
-                  Please check your internet connection and ensure the <code className="bg-black/50 p-1 rounded-sm">SUPABASE_URL</code> and <code className="bg-black/50 p-1 rounded-sm">SUPABASE_ANON_KEY</code> are correct.
+                  Please open the <code className="bg-black/50 p-1 rounded-sm">lib/supabase.ts</code> file and replace the placeholder values for <code className="bg-black/50 p-1 rounded-sm">supabaseUrl</code> and <code className="bg-black/50 p-1 rounded-sm">supabaseAnonKey</code> with your actual credentials.
                 </p>
               </div>
             </div>

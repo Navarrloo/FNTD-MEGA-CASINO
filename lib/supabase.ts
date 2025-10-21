@@ -48,27 +48,24 @@ export interface Database {
 }
 
 // -----------------------------------------------------------------------------
-// ⚠️ IMPORTANT: CONNECTION DETAILS ARE SET VIA ENVIRONMENT VARIABLES! ⚠️
-// For deployment (e.g., on Vercel), you MUST set the following
-// Environment Variables in your project settings:
-// 1. SUPABASE_URL: Your Supabase project URL.
-// 2. SUPABASE_ANON_KEY: Your Supabase project's anon (public) key.
+// ⚠️ IMPORTANT: PASTE YOUR SUPABASE CREDENTIALS HERE! ⚠️
+// You MUST replace the placeholder values below with your actual Supabase
+// project URL and anon (public) key.
 //
-// These variables must be exposed to the client-side for the app to work.
-//
-// Find these in your Supabase project's "API" settings.
+// Find these in your Supabase project's "Project Settings" > "API".
 // -----------------------------------------------------------------------------
-
-// The build system (e.g., Vercel) is expected to replace these `process.env`
-// variables with the actual string values during the build process.
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const supabaseUrl = 'https://lakvibnhoebryfuuompn.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxha3ZpYm5ob2VicnlmdXVvbXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwMzM0MjksImV4cCI6MjA3NjYwOTQyOX0.Xy04UdJonrGm9RCf1BCPXsoNLCCBzzzvoLuNJiwjqcM';
 
 
 // The App.tsx component will handle connection errors gracefully
-// if these variables are not set correctly in the deployment environment.
+// if these variables are not set correctly.
 let supabase: SupabaseClient<Database> | null = null;
 
+// FIX: Removed checks against placeholder values. Since the credentials are now hardcoded,
+// TypeScript infers their types as string literals, and comparing them to different
+// string literals ("YOUR_SUPABASE_URL") is correctly flagged as an error.
+// The truthiness check is sufficient.
 if (supabaseUrl && supabaseAnonKey) {
     try {
         supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
@@ -76,7 +73,7 @@ if (supabaseUrl && supabaseAnonKey) {
         console.error("Error creating Supabase client:", error);
     }
 } else {
-    console.error("Supabase URL or Anon Key is missing. Check your Environment Variables (SUPABASE_URL, SUPABASE_ANON_KEY).");
+    console.error("Supabase credentials are not set. Please edit `lib/supabase.ts` and replace the placeholder values.");
 }
 
 export { supabase };
