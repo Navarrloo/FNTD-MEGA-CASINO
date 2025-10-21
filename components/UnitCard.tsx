@@ -3,6 +3,7 @@ import { Unit, Rarity } from '../types';
 
 interface UnitCardProps {
   unit: Unit;
+  onClick?: () => void;
 }
 
 const getRarityColor = (rarity: Rarity): string => {
@@ -20,12 +21,14 @@ const getRarityColor = (rarity: Rarity): string => {
   }
 };
 
-const UnitCard: React.FC<UnitCardProps> = ({ unit }) => {
+const UnitCard: React.FC<UnitCardProps> = ({ unit, onClick }) => {
   const rarityColor = getRarityColor(unit.rarity);
+  const Tag = onClick ? 'button' : 'div';
 
   return (
-    <div
-      className="relative aspect-[4/5] bg-[#10101a] border border-[#2a2d3a] p-1 group transition-transform duration-200 hover:scale-105 hover:border-yellow-400"
+    <Tag
+      onClick={onClick}
+      className={`relative w-full aspect-[4/5] bg-[#10101a] border border-[#2a2d3a] p-1 group transition-transform duration-200 ${onClick ? 'hover:scale-105 hover:border-yellow-400 cursor-pointer' : ''}`}
     >
       <div className="scanlines-bg w-full h-full flex flex-col items-center justify-center p-1">
         
@@ -39,7 +42,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit }) => {
           <p className="font-pixel text-xs text-yellow-300">{unit.cost}$</p>
         </div>
       </div>
-    </div>
+    </Tag>
   );
 };
 
