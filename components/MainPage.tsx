@@ -14,6 +14,10 @@ const MainPage: React.FC = () => {
          <p className="mt-4 text-sm text-text-dark/50">
           Удачи!
         </p>
+        <div className="border-t-2 border-border-dark my-4 mx-8"></div>
+        <p className="text-sm text-accent-purple">
+            СПОНСОР БОТА: @NAVARRLORBX
+        </p>
       </div>
     </div>
   );

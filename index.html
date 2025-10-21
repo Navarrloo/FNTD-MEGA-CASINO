@@ -34,17 +34,15 @@
         image-rendering: -moz-crisp-edges;
         image-rendering: crisp-edges;
         background-image:
-            radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-            radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
-            radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px),
-            radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 2px, transparent 30px);
-        background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px;
-        background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
-        animation: stars 200s linear infinite;
+            radial-gradient(circle, var(--accent-yellow) 2px, transparent 3px),
+            radial-gradient(circle, var(--accent-yellow) 1px, transparent 2px);
+        background-size: 300px 300px, 200px 200px;
+        background-position: 0 0, 100px 150px;
+        animation: stars 150s linear infinite;
       }
       @keyframes stars {
-        from { background-position: 0 0, 40px 60px, 130px 270px, 70px 100px; }
-        to { background-position: -10000px 5000px, -10000px 5000px, -10000px 5000px, -10000px 5000px; }
+        from { background-position: 0 0, 100px 150px; }
+        to { background-position: -5000px 2500px, -4900px 2350px; }
       }
       .font-pixel {
         font-family: var(--font-pixel);
@@ -105,16 +103,18 @@
         font-family: var(--font-pixel);
         font-size: 16px;
         transition: all 0.2s ease;
+        cursor: pointer;
       }
       .pixel-button:hover {
         background-color: var(--border-light);
         color: var(--background-dark);
       }
        .pixel-button:disabled {
-        background-color: #333;
-        border-color: #555;
-        color: #777;
+        background-color: #333 !important;
+        border-color: #555 !important;
+        color: #777 !important;
         cursor: not-allowed;
+        box-shadow: none !important;
       }
 
       .pixel-button-green {
@@ -127,6 +127,39 @@
         background-color: var(--accent-green);
         color: var(--background-dark);
         box-shadow: 0 0 10px var(--accent-green);
+      }
+      .pixel-button-yellow {
+        background-color: #6c632a;
+        border: 2px solid var(--accent-yellow);
+        color: var(--accent-yellow);
+        box-shadow: 0 0 5px var(--accent-yellow), inset 0 0 5px #6c632a;
+      }
+      .pixel-button-yellow.active, .pixel-button-yellow:hover {
+        background-color: var(--accent-yellow);
+        color: var(--background-dark);
+        box-shadow: 0 0 10px var(--accent-yellow);
+      }
+      .pixel-button-purple {
+        background-color: #4c2a6c;
+        border: 2px solid var(--accent-purple);
+        color: var(--accent-purple);
+        box-shadow: 0 0 5px var(--accent-purple), inset 0 0 5px #4c2a6c;
+      }
+      .pixel-button-purple.active, .pixel-button-purple:hover {
+        background-color: var(--accent-purple);
+        color: var(--background-dark);
+        box-shadow: 0 0 10px var(--accent-purple);
+      }
+      .pixel-button-red {
+        background-color: #6c2a2a;
+        border: 2px solid var(--accent-red);
+        color: var(--accent-red);
+        box-shadow: 0 0 5px var(--accent-red), inset 0 0 5px #6c2a2a;
+      }
+      .pixel-button-red.active, .pixel-button-red:hover {
+        background-color: var(--accent-red);
+        color: var(--background-dark);
+        box-shadow: 0 0 10px var(--accent-red);
       }
        @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }

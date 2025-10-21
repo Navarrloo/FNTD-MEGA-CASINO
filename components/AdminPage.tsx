@@ -115,7 +115,7 @@ const AdminPage: React.FC = () => {
                 placeholder="Robzigame2sos"
                 className="flex-grow bg-transparent focus:outline-none px-2 py-1 text-lg text-white"
             />
-            <button onClick={handleSearch} className="px-4 py-1 text-lg bg-gradient-to-b from-[#6b8afd] to-[#4661b3] border-2 border-t-[#8aa7ff] border-l-[#8aa7ff] border-r-[#33468b] border-b-[#33468b] text-white">
+            <button onClick={handleSearch} className="pixel-button pixel-button-purple text-lg">
                 {isLoading ? '...' : 'НАЙТИ ИГРОКА'}
             </button>
         </div>
@@ -141,10 +141,10 @@ const AdminPage: React.FC = () => {
                     {/* Left Side */}
                     <div>
                         <div className="flex items-center gap-2">
-                           <input type="number" value={soulsToAdd} onChange={e => setSoulsToAdd(parseInt(e.target.value, 10) || 0)} className="bg-gray-800 border border-gray-600 w-24 px-2 py-1 text-white"/>
-                           <button onClick={handleAddSouls} className="flex-grow px-2 py-1 text-lg bg-yellow-600 text-white border-2 border-yellow-400">Дать души</button>
+                           <input type="number" value={soulsToAdd} onChange={e => setSoulsToAdd(parseInt(e.target.value, 10) || 0)} className="bg-gray-800 border border-gray-600 w-24 px-2 py-1 text-white h-full"/>
+                           <button onClick={handleAddSouls} className="pixel-button pixel-button-yellow flex-grow text-lg">Дать души</button>
                         </div>
-                         <button onClick={handleClearInventory} className="w-full mt-2 px-4 py-1 text-lg bg-gradient-to-b from-[#6b8afd] to-[#4661b3] border-2 border-t-[#8aa7ff] border-l-[#8aa7ff] border-r-[#33468b] border-b-[#33468b] text-white">
+                         <button onClick={handleClearInventory} className="pixel-button pixel-button-red w-full mt-2 text-lg">
                             ПОЧИСТИТЬ ИНВЕНТАРЬ
                          </button>
                     </div>
@@ -159,7 +159,7 @@ const AdminPage: React.FC = () => {
                                 </p>
                             ))}
                         </div>
-                         <button onClick={handleGiveUnit} disabled={!selectedUnit} className="w-full mt-1 px-4 py-1 text-lg bg-gradient-to-b from-[#71e582] to-[#489b58] border-2 border-t-[#96f4a5] border-l-[#96f4a5] border-r-[#377943] border-b-[#377943] text-black disabled:from-gray-600 disabled:to-gray-800 disabled:cursor-not-allowed">
+                         <button onClick={handleGiveUnit} disabled={!selectedUnit} className="pixel-button pixel-button-green w-full mt-1 text-lg">
                             ВЫДАТЬ
                          </button>
                     </div>

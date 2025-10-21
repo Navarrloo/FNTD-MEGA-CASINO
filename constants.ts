@@ -2,7 +2,7 @@
 import { Unit, Rarity } from './types';
 
 export const ADMIN_USERNAMES = ['NAVARRLO', 'AVE4GE'];
-export const CASINO_COST = 0;
+export const CASINO_COST = 1;
 export const STARTING_BALANCE = 1000;
 export const BALANCE_ICON = 'https://files.catbox.moe/dbovxg.webp';
 
