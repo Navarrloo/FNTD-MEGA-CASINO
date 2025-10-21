@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FNTD 2 Wiki & Casino</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --background-dark: #0d0d12;
+        --background-med: #1a1a22;
+        --border-light: #6c7182;
+        --border-dark: #2a2d3a;
+        --text-light: #e0e1e6;
+        --text-dark: #a0a2aa;
+        --accent-green: #32ff91;
+        --accent-yellow: #fcee63;
+        --accent-purple: #b456f0;
+        --accent-red: #ff3232;
+        --font-pixel: 'VT323', monospace;
+      }
+      html, body, #root {
+        height: 100%;
+      }
+      body {
+        background-color: var(--background-dark);
+        color: var(--text-light);
+        font-family: var(--font-pixel);
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+        background-image:
+            radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+            radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+            radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px),
+            radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 2px, transparent 30px);
+        background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px;
+        background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+        animation: stars 200s linear infinite;
+      }
+      @keyframes stars {
+        from { background-position: 0 0, 40px 60px, 130px 270px, 70px 100px; }
+        to { background-position: -10000px 5000px, -10000px 5000px, -10000px 5000px, -10000px 5000px; }
+      }
+      .font-pixel {
+        font-family: var(--font-pixel);
+        text-transform: uppercase;
+      }
+      .scanlines {
+        position: relative;
+        overflow: hidden;
+      }
+      .scanlines::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        background-size: 100% 4px, 6px 100%;
+        z-index: 2;
+        pointer-events: none;
+        animation: scan 5s linear infinite;
+      }
+      @keyframes scan {
+        0% { background-position: 0 0; }
+        100% { background-position: 0 40px; }
+      }
+
+      .pixel-border {
+        border-style: solid;
+        border-width: 4px;
+        border-image-slice: 2;
+        border-image-width: 2;
+        border-image-repeat: stretch;
+        border-image-source: url('data:image/svg+xml;utf8,<?xml version="1.0" encoding="UTF-8" ?><svg version="1.1" width="5" height="5" xmlns="http://www.w3.org/2000/svg"><path d="M2 1 h1 v1 h1 v1 h-1 v1 h-1 v-1 h-1 v-1 h1 z" fill="rgb(108,113,130)" /></svg>');
+        border-image-outset: 2;
+        position: relative;
+        background: var(--background-med);
+        padding: 1rem;
+      }
+       .pixel-border::after {
+        content: '';
+        position: absolute;
+        top: -4px; right: -4px; bottom: -4px; left: -4px;
+        border-style: solid;
+        border-width: 4px;
+        border-image-slice: 2;
+        border-image-width: 2;
+        border-image-repeat: stretch;
+        border-image-source: url('data:image/svg+xml;utf8,<?xml version="1.0" encoding="UTF-8" ?><svg version="1.1" width="5" height="5" xmlns="http://www.w3.org/2000/svg"><path d="M2 1 h1 v1 h1 v1 h-1 v1 h-1 v-1 h-1 v-1 h1 z" fill="rgb(42,45,58)" /></svg>');
+      }
+
+      .pixel-button {
+        background-color: var(--border-dark);
+        border: 2px solid var(--border-light);
+        color: var(--text-light);
+        padding: 8px 16px;
+        text-transform: uppercase;
+        font-family: var(--font-pixel);
+        font-size: 16px;
+        transition: all 0.2s ease;
+      }
+      .pixel-button:hover {
+        background-color: var(--border-light);
+        color: var(--background-dark);
+      }
+       .pixel-button:disabled {
+        background-color: #333;
+        border-color: #555;
+        color: #777;
+        cursor: not-allowed;
+      }
+
+      .pixel-button-green {
+        background-color: #1c5737;
+        border: 2px solid var(--accent-green);
+        color: var(--accent-green);
+        box-shadow: 0 0 5px var(--accent-green), inset 0 0 5px #1c5737;
+      }
+      .pixel-button-green.active, .pixel-button-green:hover {
+        background-color: var(--accent-green);
+        color: var(--background-dark);
+        box-shadow: 0 0 10px var(--accent-green);
+      }
+       @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+      .scanlines-bg {
+        background-color: #1a1a2b;
+        background-image: linear-gradient(rgba(0,0,0,0.2) 50%, transparent 50%);
+        background-size: 100% 4px;
+      }
+      .encyclopedia-container {
+        position: relative;
+        padding-left: 20px;
+      }
+      .encyclopedia-container::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 12px;
+        background-color: #2c2c3e;
+        background-image: linear-gradient(0deg, rgba(0,0,0,0.3) 50%, transparent 50%);
+        background-size: 100% 6px;
+        border-right: 2px solid #111;
+      }
+      .win-modal-container {
+        background: #0d0d12;
+        border: 2px solid #2a2d3a;
+        padding: 1.5rem;
+        width: 320px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      }
+      .pixel-button-glow {
+        background-color: transparent;
+        border: 2px solid var(--accent-green);
+        color: var(--accent-green);
+        padding: 10px 20px;
+        text-transform: uppercase;
+        font-family: var(--font-pixel);
+        font-size: 18px;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 8px var(--accent-green), inset 0 0 8px rgba(50, 255, 145, 0.3);
+        position: relative;
+        cursor: pointer;
+      }
+      .pixel-button-glow::before {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        right: 3px;
+        bottom: 3px;
+        border: 1px solid var(--accent-green);
+        opacity: 0.5;
+      }
+      .pixel-button-glow:hover {
+        background-color: rgba(50, 255, 145, 0.1);
+        box-shadow: 0 0 15px var(--accent-green), inset 0 0 10px rgba(50, 255, 145, 0.4);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+  }
+}
+</script>
+</head>
+  <body class="scanlines">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
