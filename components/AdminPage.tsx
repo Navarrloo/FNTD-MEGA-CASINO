@@ -21,7 +21,7 @@ const AdminPage: React.FC = () => {
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
 
   const handleSearch = async () => {
-    if (!searchTerm) return;
+    if (!searchTerm || !supabase) return;
     setIsLoading(true);
     setMessage('');
     setFoundUser(null);
@@ -41,7 +41,7 @@ const AdminPage: React.FC = () => {
   };
 
   const handleAddSouls = async () => {
-    if (!foundUser || soulsToAdd <= 0) return;
+    if (!foundUser || soulsToAdd <= 0 || !supabase) return;
     
     const newBalance = foundUser.balance + soulsToAdd;
     const { data, error } = await supabase
@@ -61,7 +61,7 @@ const AdminPage: React.FC = () => {
   };
 
   const handleGiveUnit = async () => {
-    if (!foundUser || !selectedUnit) return;
+    if (!foundUser || !selectedUnit || !supabase) return;
     
     const currentInventory = Array.isArray(foundUser.inventory) ? foundUser.inventory : [];
     const newInventory = [...currentInventory, selectedUnit];
@@ -83,7 +83,7 @@ const AdminPage: React.FC = () => {
   };
   
   const handleClearInventory = async () => {
-    if (!foundUser) return;
+    if (!foundUser || !supabase) return;
     if (!window.confirm(`Are you sure you want to clear inventory for ${foundUser.username}?`)) return;
 
      const { data, error } = await supabase

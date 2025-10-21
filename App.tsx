@@ -11,6 +11,7 @@ import { Unit } from './types';
 import { supabase } from './lib/supabase';
 
 type Page = 'main' | 'wiki' | 'casino' | 'profile' | 'admin';
+type DbStatus = 'connecting' | 'ok' | 'error';
 
 interface GameContextType {
   balance: number;
@@ -28,11 +29,35 @@ const App: React.FC = () => {
   const [balance, setBalance] = useState<number>(0);
   const [inventory, setInventory] = useState<Unit[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [dbStatus, setDbStatus] = useState<DbStatus>('connecting');
 
   useEffect(() => {
+    const checkConnection = async () => {
+      if (!supabase) {
+        console.error("Supabase client is not initialized. Check environment variables.");
+        setDbStatus('error');
+        return;
+      }
+      // We perform a simple query to check the connection and API keys.
+      const { error } = await supabase.from('profiles').select('id').limit(1);
+
+      // If an error occurs that is not 'relation "profiles" does not exist' (42P01),
+      // it's likely a connection or authentication issue.
+      if (error && error.code !== '42P01') {
+         console.error("Supabase connection error:", error.message);
+         setDbStatus('error');
+      } else {
+         setDbStatus('ok');
+      }
+    };
+    checkConnection();
+  }, []);
+
+  useEffect(() => {
+    if (dbStatus !== 'ok' || !supabase) return;
+
     if (!user) {
-        // Handle case where user is not logged in or data is not available yet
-        if (window.Telegram?.WebApp?.initData === "") setIsLoading(false); // If no user data, stop loading
+        if (window.Telegram?.WebApp?.initData === "") setIsLoading(false);
         return;
     };
 
@@ -52,8 +77,6 @@ const App: React.FC = () => {
 
         if (profile) {
             setBalance(profile.balance);
-            // Inventory from Supabase should already contain full unit objects.
-            // Just ensure it's an array.
             const userInventory = Array.isArray(profile.inventory) ? profile.inventory : [];
             setInventory(userInventory);
         } else {
@@ -80,15 +103,13 @@ const App: React.FC = () => {
     };
 
     loadUserProfile();
-  }, [user]);
+  }, [user, dbStatus]);
 
   const addToInventory = useCallback(async (unit: Unit) => {
-    if (!user) return;
+    if (!user || !supabase) return;
     
-    // Optimistic UI update using functional form
     setInventory(current => [...current, unit]);
 
-    // To prevent race conditions, fetch the latest inventory from DB, append, and then update.
     const { data, error: fetchError } = await supabase
         .from('profiles')
         .select('inventory')
@@ -97,7 +118,6 @@ const App: React.FC = () => {
     
     if (fetchError) {
         console.error('Error fetching inventory before update:', fetchError);
-        // Revert by removing the last added unit. This is brittle but simple.
         setInventory(current => current.slice(0, -1));
         return;
     }
@@ -112,7 +132,6 @@ const App: React.FC = () => {
     
     if (updateError) {
         console.error("Failed to update inventory in DB:", updateError);
-        // Revert by refetching the true state from DB. This is the safest revert.
         const { data: revertData, error: revertError } = await supabase
             .from('profiles')
             .select('inventory')
@@ -125,9 +144,9 @@ const App: React.FC = () => {
   }, [user]);
 
   const updateBalance = useCallback(async (newBalance: number) => {
-    if (!user) return;
+    if (!user || !supabase) return;
     const oldBalance = balance;
-    setBalance(newBalance); // Optimistic update
+    setBalance(newBalance); 
 
     const { error } = await supabase
       .from('profiles')
@@ -136,7 +155,7 @@ const App: React.FC = () => {
 
     if (error) {
       console.error("Failed to update balance", error);
-      setBalance(oldBalance); // Revert
+      setBalance(oldBalance);
     }
   }, [balance, user]);
 
@@ -146,6 +165,30 @@ const App: React.FC = () => {
   }, [user]);
 
   const renderPage = () => {
+    if (dbStatus === 'connecting') {
+        return (
+            <div className="flex justify-center items-center h-full">
+                <p className="font-pixel text-xl animate-pulse">Connecting to Database...</p>
+            </div>
+        );
+    }
+
+    if (dbStatus === 'error') {
+        return (
+             <div className="p-4 flex items-center justify-center h-full">
+               <div className="pixel-border bg-red-900/50 max-w-md text-center border-red-500">
+                <h1 className="font-pixel text-2xl text-accent-red mb-4">DATABASE CONNECTION FAILED</h1>
+                <p className="text-text-light text-lg">
+                  Could not connect to the Supabase database.
+                </p>
+                <p className="mt-2 text-text-dark text-base">
+                  Please check that you have set the <code className="bg-black/50 p-1 rounded-sm">SUPABASE_URL</code> and <code className="bg-black/50 p-1 rounded-sm">SUPABASE_ANON_KEY</code> Environment Variables correctly in your Vercel project settings.
+                </p>
+              </div>
+            </div>
+        )
+    }
+
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-full">
