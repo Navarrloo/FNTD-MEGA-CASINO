@@ -28,6 +28,8 @@ export interface Database {
           balance?: number
           inventory?: Unit[] | null
         }
+        // FIX: Add Relationships property, which is required for Supabase's type inference to work correctly.
+        Relationships: []
       }
     }
     Views: {
@@ -51,15 +53,17 @@ export interface Database {
 // Environment Variables in your project settings:
 // 1. SUPABASE_URL: Your Supabase project URL.
 // 2. SUPABASE_ANON_KEY: Your Supabase project's anon (public) key.
-// Find these in your Supabase project's "API" settings.
 //
-// The code falls back to empty strings if variables are not found,
-// allowing the app to load and display a connection error message
-// instead of crashing.
+// These variables must be exposed to the client-side for the app to work.
+//
+// Find these in your Supabase project's "API" settings.
 // -----------------------------------------------------------------------------
 
+// The build system (e.g., Vercel) is expected to replace these `process.env`
+// variables with the actual string values during the build process.
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+
 
 // The App.tsx component will handle connection errors gracefully
 // if these variables are not set correctly in the deployment environment.
@@ -72,7 +76,7 @@ if (supabaseUrl && supabaseAnonKey) {
         console.error("Error creating Supabase client:", error);
     }
 } else {
-    console.error("Supabase URL or Anon Key is missing. Check environment variables.");
+    console.error("Supabase URL or Anon Key is missing. Check your Environment Variables (SUPABASE_URL, SUPABASE_ANON_KEY).");
 }
 
 export { supabase };

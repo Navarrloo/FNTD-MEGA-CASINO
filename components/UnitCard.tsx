@@ -24,7 +24,9 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit }) => {
   const rarityColor = getRarityColor(unit.rarity);
 
   return (
-    <div className="relative aspect-[4/5] bg-[#10101a] border border-[#2a2d3a] p-1 group transition-transform duration-200 hover:scale-105 hover:border-yellow-400">
+    <div
+      className="relative aspect-[4/5] bg-[#10101a] border border-[#2a2d3a] p-1 group transition-transform duration-200 hover:scale-105 hover:border-yellow-400"
+    >
       <div className="scanlines-bg w-full h-full flex flex-col items-center justify-center p-1">
         
         <div className={`absolute top-1 right-1 w-2.5 h-2.5 border border-black ${rarityColor}`}></div>

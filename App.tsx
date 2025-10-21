@@ -1,3 +1,5 @@
+
+
 import React, { useState, useMemo, createContext, useEffect, useCallback } from 'react';
 import { useTelegram } from './hooks/useTelegram';
 import { ADMIN_USERNAMES, STARTING_BALANCE, UNITS } from './constants';
@@ -38,14 +40,24 @@ const App: React.FC = () => {
         setDbStatus('error');
         return;
       }
-      // We perform a simple query to check the connection and API keys.
+      
       const { error } = await supabase.from('profiles').select('id').limit(1);
 
-      // If an error occurs that is not 'relation "profiles" does not exist' (42P01),
-      // it's likely a connection or authentication issue.
-      if (error && error.code !== '42P01') {
-         console.error("Supabase connection error:", error.message);
-         setDbStatus('error');
+      if (error) {
+        // We only consider it a fatal connection error if we fail to fetch (network error)
+        // or if there's an authentication issue (JWT error). Other errors, like RLS
+        // or a missing table, mean the server is reachable.
+        const isFatalError = 
+            error.message.includes('Failed to fetch') || 
+            error.message.includes('JWT');
+        
+        if (isFatalError) {
+           console.error("Supabase connection error:", error.message);
+           setDbStatus('error');
+        } else {
+           console.warn("Supabase query warning (e.g., RLS or missing table):", error.message);
+           setDbStatus('ok'); // Connection is fine, proceed with app load.
+        }
       } else {
          setDbStatus('ok');
       }
@@ -122,7 +134,7 @@ const App: React.FC = () => {
         return;
     }
 
-    const dbInventory = Array.isArray(data.inventory) ? data.inventory : [];
+    const dbInventory = data && Array.isArray(data.inventory) ? data.inventory : [];
     const newInventory = [...dbInventory, unit];
     
     const { error: updateError } = await supabase
@@ -182,7 +194,7 @@ const App: React.FC = () => {
                   Could not connect to the Supabase database.
                 </p>
                 <p className="mt-2 text-text-dark text-base">
-                  Please check that you have set the <code className="bg-black/50 p-1 rounded-sm">SUPABASE_URL</code> and <code className="bg-black/50 p-1 rounded-sm">SUPABASE_ANON_KEY</code> Environment Variables correctly in your Vercel project settings.
+                  Please check your internet connection and ensure the <code className="bg-black/50 p-1 rounded-sm">SUPABASE_URL</code> and <code className="bg-black/50 p-1 rounded-sm">SUPABASE_ANON_KEY</code> are correct.
                 </p>
               </div>
             </div>
