@@ -52,10 +52,10 @@ const App: React.FC = () => {
 
         if (profile) {
             setBalance(profile.balance);
-            // Ensure inventory is an array
+            // Inventory from Supabase should already contain full unit objects.
+            // Just ensure it's an array.
             const userInventory = Array.isArray(profile.inventory) ? profile.inventory : [];
-            const hydratedInventory = userInventory.map((invUnit: {id: number}) => UNITS.find(u => u.id === invUnit.id)).filter(Boolean) as Unit[];
-            setInventory(hydratedInventory);
+            setInventory(userInventory);
         } else {
             const { data: newProfile, error: insertError } = await supabase
                 .from('profiles')
@@ -84,19 +84,45 @@ const App: React.FC = () => {
 
   const addToInventory = useCallback(async (unit: Unit) => {
     if (!user) return;
-    const newInventory = [...inventory, unit];
-    setInventory(newInventory); // Optimistic update
-
-    const { error } = await supabase
-      .from('profiles')
-      .update({ inventory: newInventory })
-      .eq('id', user.id);
     
-    if (error) {
-      console.error("Failed to update inventory", error);
-      setInventory(inventory); // Revert on error
+    // Optimistic UI update using functional form
+    setInventory(current => [...current, unit]);
+
+    // To prevent race conditions, fetch the latest inventory from DB, append, and then update.
+    const { data, error: fetchError } = await supabase
+        .from('profiles')
+        .select('inventory')
+        .eq('id', user.id)
+        .single();
+    
+    if (fetchError) {
+        console.error('Error fetching inventory before update:', fetchError);
+        // Revert by removing the last added unit. This is brittle but simple.
+        setInventory(current => current.slice(0, -1));
+        return;
     }
-  }, [inventory, user]);
+
+    const dbInventory = Array.isArray(data.inventory) ? data.inventory : [];
+    const newInventory = [...dbInventory, unit];
+    
+    const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ inventory: newInventory })
+        .eq('id', user.id);
+    
+    if (updateError) {
+        console.error("Failed to update inventory in DB:", updateError);
+        // Revert by refetching the true state from DB. This is the safest revert.
+        const { data: revertData, error: revertError } = await supabase
+            .from('profiles')
+            .select('inventory')
+            .eq('id', user.id)
+            .single();
+        if (!revertError && revertData) {
+            setInventory(Array.isArray(revertData.inventory) ? revertData.inventory : []);
+        }
+    }
+  }, [user]);
 
   const updateBalance = useCallback(async (newBalance: number) => {
     if (!user) return;

@@ -107,7 +107,7 @@ const AdminPage: React.FC = () => {
       {/* Fix: Cast style object to React.CSSProperties to allow custom CSS properties. */}
       <div className="pixel-border" style={{'--background-med': '#1e1e1e'} as React.CSSProperties}>
         {/* Search Bar */}
-        <div className="flex items-center gap-2 p-1 bg-black/50 border-2 border-[#111]">
+        <div className="relative z-10 flex items-center gap-2 p-1 bg-black/50 border-2 border-[#111]">
             <input
                 type="text"
                 value={searchTerm}
