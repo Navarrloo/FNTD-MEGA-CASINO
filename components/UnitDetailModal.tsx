@@ -1,7 +1,6 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Unit, Rarity } from '../types';
-import { BALANCE_ICON } from '../constants';
+import { BALANCE_ICON, UNIT_DETAILS, UnitDetails, UnitStatLevel } from '../constants';
 
 interface UnitDetailModalProps {
   unit: Unit | null;
@@ -11,7 +10,6 @@ interface UnitDetailModalProps {
 
 const getRarityStyles = (rarity: Rarity): { text: string; border: string; bg: string } => {
   switch (rarity) {
-    // FIX: Add case for Common rarity
     case Rarity.Common:
       return { text: 'text-gray-300', border: 'border-gray-400', bg: 'bg-gray-700/50' };
     case Rarity.Uncommon:
@@ -36,54 +34,141 @@ const getRarityStyles = (rarity: Rarity): { text: string; border: string; bg: st
 };
 
 const UnitDetailModal: React.FC<UnitDetailModalProps> = ({ unit, isOpen, onClose }) => {
+  const [showDetails, setShowDetails] = useState(false);
+  const [activeTab, setActiveTab] = useState<'regular' | 'shiny'>('regular');
+
+  useEffect(() => {
+    if (isOpen) {
+      setShowDetails(false);
+      setActiveTab('regular');
+    }
+  }, [isOpen, unit]);
+
   if (!isOpen || !unit) {
     return null;
   }
 
+  const unitDetails: UnitDetails | undefined = UNIT_DETAILS[unit.id];
   const rarityStyles = getRarityStyles(unit.rarity);
+
+  const handleClose = () => {
+    setShowDetails(false);
+    onClose();
+  };
+  
+  const renderStatsTable = (stats: UnitStatLevel[]) => (
+     <div className="overflow-x-auto">
+        <table className="stats-table">
+            <thead>
+                <tr>
+                    <th>Lvl</th>
+                    <th>Stats</th>
+                    <th>Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                {stats.map((lvl) => (
+                    <tr key={lvl.level}>
+                        <td className="text-accent-yellow font-bold text-center">{lvl.level}</td>
+                        <td>
+                            <p>Dmg: {lvl.damage}</p>
+                            <p>Rng: {lvl.range}</p>
+                            <p>CD: {lvl.cooldown}</p>
+                            {lvl.attackType && <p className="text-xs text-text-dark">{lvl.attackType}</p>}
+                        </td>
+                        <td className="text-accent-green">${lvl.cost.toLocaleString()}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    </div>
+  );
 
   return (
     <div 
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn"
-      onClick={onClose}
+      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn p-4"
+      onClick={handleClose}
     >
       <div 
-        className="win-modal-container scanlines-bg !w-11/12 max-w-sm"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+        className={`relative bg-background-med p-4 border-2 border-white w-full font-pixel transition-all duration-300 ${showDetails ? 'max-w-md' : 'max-w-xs'}`}
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button */}
         <button 
-          onClick={onClose} 
-          className="absolute -top-2 -right-2 w-8 h-8 pixel-button pixel-button-red !p-0 flex items-center justify-center z-10"
+          onClick={handleClose} 
+          className="absolute w-8 h-8 bg-red-600 text-white text-lg flex items-center justify-center border-2 border-white"
+          style={{ top: '-2px', right: '-2px'}}
+          aria-label="Close modal"
         >
           X
         </button>
 
-        {/* Unit Image */}
-        <div className="mx-auto w-40 h-56 mb-4 p-2 bg-black/30 border-2 border-border-dark">
-            <img src={unit.image} alt={unit.name} className="w-full h-full object-contain" />
-        </div>
-        
-        {/* Name */}
-        <h2 className="font-pixel text-2xl text-center text-accent-yellow">{unit.name}</h2>
-        
-        {/* Rarity and Cost */}
-        <div className="flex justify-center items-center gap-4 my-3">
-          <div className={`px-3 py-1 border-2 ${rarityStyles.border} ${rarityStyles.bg}`}>
-            <p className={`font-pixel text-sm ${rarityStyles.text}`}>{unit.rarity}</p>
-          </div>
-          <div className="flex items-center justify-center bg-black/30 p-2 border-2 border-border-dark">
-                <img src={BALANCE_ICON} alt="Souls" className="w-5 h-5 mr-2"/>
-                <p className="font-pixel text-lg text-accent-yellow">{unit.cost.toLocaleString()}</p>
+        <div className="flex items-center gap-4">
+            <div className="w-16 h-16 p-1 bg-black border-2 border-white flex-shrink-0">
+                <img src={unit.image} alt={unit.name} className="w-full h-full object-contain" />
+            </div>
+            <div className="text-left flex-grow">
+                <h2 className="text-xl text-white uppercase">{unit.name}</h2>
+                <div className="flex items-center gap-2 mt-2">
+                  <div className={`px-2 py-0.5 border-2 ${rarityStyles.border}`}>
+                    <p className={`text-xs uppercase ${rarityStyles.text}`}>{unit.rarity}</p>
+                  </div>
+                  <div className="flex items-center border-2 border-white px-2 py-0.5">
+                        <img src={BALANCE_ICON} alt="Cost" className="w-4 h-4 mr-1.5"/>
+                        <p className="text-base text-white">{unit.cost.toLocaleString()}</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        {/* Separator */}
-        <div className="border-t-2 border-border-dark my-4 mx-8"></div>
+        <div className="border-t-2 border-white my-4"></div>
+        
+        <p className="text-white text-base leading-tight uppercase">{unit.description}</p>
+        
+        {unitDetails && (
+          <>
+            <div className="border-t-2 border-white my-4"></div>
+            {showDetails ? (
+              <div className="animate-fadeIn">
+                <div className="modal-details-container">
+                  {unitDetails.passives && unitDetails.passives.length > 0 && (
+                      <div className="mb-4">
+                          <h3 className="font-pixel text-lg text-accent-purple mb-2">Passives</h3>
+                          {unitDetails.passives.map(passive => (
+                              <div key={passive.name} className="bg-black/30 p-2 border-l-2 border-accent-purple">
+                                  <p className="font-bold text-text-light">{passive.name}</p>
+                                  <p className="text-sm text-text-dark">{passive.description}</p>
+                              </div>
+                          ))}
+                      </div>
+                  )}
 
-        {/* Description */}
-        <p className="text-center text-text-dark text-base px-2">{unit.description}</p>
+                  <div className="flex gap-2 mb-2">
+                      <button onClick={() => setActiveTab('regular')} className={`stats-tab ${activeTab === 'regular' ? 'active' : ''}`}>Regular</button>
+                      <button onClick={() => setActiveTab('shiny')} className={`stats-tab ${activeTab === 'shiny' ? 'active' : ''}`}>Shiny</button>
+                  </div>
+                  
+                  {renderStatsTable(unitDetails.stats[activeTab])}
 
+                  {unitDetails.history && unitDetails.history.length > 0 && (
+                      <div className="mt-4">
+                          <h3 className="font-pixel text-lg text-accent-purple mb-2">History</h3>
+                          <div className="bg-black/30 p-2 border-l-2 border-accent-purple text-sm">
+                              {unitDetails.history.map(entry => (
+                                  <p key={entry.date} className="text-text-dark">
+                                      <span className="text-text-light">{entry.date}:</span> {entry.change}
+                                  </p>
+                              ))}
+                          </div>
+                      </div>
+                  )}
+                </div>
+                <button onClick={() => setShowDetails(false)} className="pixel-button-yellow w-full mt-4">Скрыть характеристики</button>
+              </div>
+            ) : (
+              <button onClick={() => setShowDetails(true)} className="pixel-button-green w-full">Показать характеристики</button>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,5 @@
 
-
 import React, { useState, useCallback, useContext, useEffect } from 'react';
-// FIX: Import Rarity to use enum members for comparison instead of string literals.
 import { Unit, Rarity } from '../types';
 import { UNITS, CASINO_COST } from '../constants';
 import UnitCard from './UnitCard';
@@ -36,11 +34,18 @@ const CasinoPage: React.FC = () => {
         const weightedUnits: Unit[] = [];
         UNITS.forEach(unit => {
           let weight = 1;
-          // FIX: Use Rarity enum for comparison to fix type error and improve code quality.
-          if (unit.rarity === Rarity.Legendary) weight = 1;
-          if (unit.rarity === Rarity.Epic) weight = 5;
-          if (unit.rarity === Rarity.Rare) weight = 20;
-          if (unit.rarity === Rarity.Common) weight = 40;
+          switch(unit.rarity) {
+            case Rarity.Common: weight = 100; break;
+            case Rarity.Uncommon: weight = 50; break;
+            case Rarity.Rare: weight = 25; break;
+            case Rarity.Epic: weight = 10; break;
+            case Rarity.Mythic: weight = 5; break;
+            case Rarity.Secret: weight = 3; break;
+            case Rarity.Nightmare: weight = 2; break;
+            case Rarity.Hero: weight = 1; break;
+            case Rarity.Legendary: weight = 1; break;
+            default: weight = 1;
+          }
           for (let i = 0; i < weight; i++) {
             weightedUnits.push(unit);
           }

@@ -33,21 +33,21 @@ const App: React.FC = () => {
   const [inventory, setInventory] = useState<Unit[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [dbStatus, setDbStatus] = useState<DbStatus>('connecting');
+  const [connectionError, setConnectionError] = useState<string | null>(null);
 
   useEffect(() => {
     const checkConnection = async () => {
       if (!supabase) {
         console.error("Supabase client is not initialized. Check lib/supabase.ts");
         setDbStatus('error');
+        setConnectionError("Supabase client failed to initialize. Check the browser console for details.");
         return;
       }
       
       const { error } = await supabase.from('profiles').select('id').limit(1);
 
       if (error) {
-        // We only consider it a fatal connection error if we fail to fetch (network error)
-        // or if there's an authentication issue (JWT error). Other errors, like RLS
-        // or a missing table, mean the server is reachable.
+        setConnectionError(error.message);
         const isFatalError = 
             error.message.includes('Failed to fetch') || 
             error.message.includes('JWT') ||
@@ -58,7 +58,7 @@ const App: React.FC = () => {
            setDbStatus('error');
         } else {
            console.warn("Supabase query warning (e.g., RLS or missing table):", error.message);
-           setDbStatus('ok'); // Connection is fine, proceed with app load.
+           setDbStatus('ok'); 
         }
       } else {
          setDbStatus('ok');
@@ -188,16 +188,36 @@ const App: React.FC = () => {
     }
 
     if (dbStatus === 'error') {
+        const isCorsError = connectionError?.includes('Failed to fetch');
         return (
              <div className="p-4 flex items-center justify-center h-full">
                <div className="pixel-border bg-red-900/50 max-w-md text-center border-red-500">
-                <h1 className="font-pixel text-2xl text-accent-red mb-4">DATABASE CONFIGURATION ERROR</h1>
-                <p className="text-text-light text-lg">
-                  Could not connect to the Supabase database.
-                </p>
-                <p className="mt-2 text-text-dark text-base">
-                  Please open the <code className="bg-black/50 p-1 rounded-sm">lib/supabase.ts</code> file and replace the placeholder values for <code className="bg-black/50 p-1 rounded-sm">supabaseUrl</code> and <code className="bg-black/50 p-1 rounded-sm">supabaseAnonKey</code> with your actual credentials.
-                </p>
+                <h1 className="font-pixel text-2xl text-accent-red mb-4">DATABASE CONNECTION ERROR</h1>
+                {isCorsError ? (
+                  <>
+                    <p className="text-text-light text-lg">
+                      This is likely a <span className="text-accent-yellow">CORS issue</span>. Your Supabase project is not configured to allow requests from this domain.
+                    </p>
+                    <p className="mt-4 text-text-dark text-base">
+                      To fix this, go to your <span className="text-white">Supabase Dashboard</span>:
+                    </p>
+                    <ol className="text-left text-sm text-text-light list-decimal list-inside mt-2 space-y-1">
+                        <li>Navigate to <span className="text-white">Project Settings</span> &gt; <span className="text-white">API</span>.</li>
+                        <li>Find the <span className="text-white">CORS settings</span> section.</li>
+                        <li>Add your app's URL to the list of allowed origins. For testing, you can use <code className="bg-black/50 p-1 rounded-sm">*</code> to allow all domains.</li>
+                    </ol>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-text-light text-lg">
+                      Could not connect to the Supabase database.
+                    </p>
+                    <p className="mt-2 text-text-dark text-base">
+                      Please check your credentials in <code className="bg-black/50 p-1 rounded-sm">lib/supabase.ts</code> and ensure your Supabase project is running.
+                    </p>
+                    <p className="text-xs text-text-dark/70 mt-4">Error: {connectionError}</p>
+                  </>
+                )}
               </div>
             </div>
         )

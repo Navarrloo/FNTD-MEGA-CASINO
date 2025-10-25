@@ -9,7 +9,6 @@ interface UnitCardProps {
 
 const getRarityColor = (rarity: Rarity): string => {
   switch (rarity) {
-    // FIX: Add case for Common rarity
     case Rarity.Common:
       return 'bg-gray-500';
     case Rarity.Uncommon:

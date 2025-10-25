@@ -1,3 +1,4 @@
+
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import { Unit } from '../types';
 
@@ -28,7 +29,6 @@ export interface Database {
           balance?: number
           inventory?: Unit[] | null
         }
-        // FIX: Add Relationships property, which is required for Supabase's type inference to work correctly.
         Relationships: []
       }
     }
@@ -62,10 +62,6 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 // if these variables are not set correctly.
 let supabase: SupabaseClient<Database> | null = null;
 
-// FIX: Removed checks against placeholder values. Since the credentials are now hardcoded,
-// TypeScript infers their types as string literals, and comparing them to different
-// string literals ("YOUR_SUPABASE_URL") is correctly flagged as an error.
-// The truthiness check is sufficient.
 if (supabaseUrl && supabaseAnonKey) {
     try {
         supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);

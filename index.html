@@ -181,11 +181,11 @@
       }
       .win-modal-container {
         background: #0d0d12;
-        border: 2px solid #2a2d3a;
-        padding: 1.5rem;
+        padding: 1rem;
         width: 320px;
         text-align: center;
         box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        position: relative;
       }
       .pixel-button-glow {
         background-color: transparent;
@@ -350,6 +350,59 @@
       .admin-list-item.selected {
         background-color: var(--accent-purple);
         color: var(--text-light);
+      }
+
+      /* Unit Detail Modal Styles */
+      .modal-details-container {
+        max-height: 65vh;
+        overflow-y: auto;
+        padding-right: 8px; /* space for scrollbar */
+      }
+      .modal-details-container::-webkit-scrollbar {
+        width: 8px;
+      }
+      .modal-details-container::-webkit-scrollbar-track {
+        background: var(--background-dark);
+      }
+      .modal-details-container::-webkit-scrollbar-thumb {
+        background: var(--border-light);
+        border: 2px solid var(--background-dark);
+      }
+      .stats-tab {
+        padding: 4px 12px;
+        border: 2px solid var(--border-dark);
+        background-color: var(--background-med);
+        color: var(--text-dark);
+        font-family: var(--font-pixel);
+        text-transform: uppercase;
+        font-size: 14px;
+      }
+      .stats-tab.active {
+        background-color: var(--accent-yellow);
+        border-color: var(--accent-yellow);
+        color: var(--background-dark);
+        box-shadow: 0 0 5px var(--accent-yellow);
+      }
+      .stats-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.75rem;
+      }
+      .stats-table th, .stats-table td {
+        border: 1px solid var(--border-dark);
+        padding: 4px 8px;
+        text-align: left;
+        font-size: 14px;
+      }
+      .stats-table th {
+        background-color: #111;
+        font-family: var(--font-pixel);
+        text-transform: uppercase;
+        color: var(--accent-yellow);
+      }
+      .stats-table td {
+          color: var(--text-light);
+          vertical-align: top;
       }
     </style>
   <script type="importmap">
