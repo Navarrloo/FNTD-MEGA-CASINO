@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useMemo, createContext, useEffect, useCallback } from 'react';
 import { useTelegram } from './hooks/useTelegram';
 import { ADMIN_USERNAMES, STARTING_BALANCE, UNITS } from './constants';
@@ -249,7 +247,7 @@ const App: React.FC = () => {
   return (
     <GameContext.Provider value={{ balance, updateBalance, inventory, addToInventory, isLoading }}>
       <div className="bg-transparent min-h-full text-text-light font-pixel selection:bg-accent-green selection:text-background-dark flex flex-col">
-        <main className="flex-grow pt-4 px-2 overflow-y-auto pb-24">
+        <main className="flex-grow pt-4 px-2 pb-24 flex flex-col">
           {renderPage()}
         </main>
         <NavBar activePage={activePage} setActivePage={setActivePage} isAdmin={isAdmin} />

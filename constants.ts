@@ -36,6 +36,34 @@ export interface UnitDetails {
 }
 
 export const UNIT_DETAILS: Record<number, UnitDetails> = {
+  7: {
+    id: 7,
+    passives: [
+      {
+        name: 'Stolen Batteries',
+        description: 'Balloon Boy applies +2% Range for all Units in Range, increasing by 2% per Upgrade.'
+      }
+    ],
+    stats: {
+      regular: [
+        { level: 1, cost: 400, damage: 0, range: 15, cooldown: 0, attackType: '[Support]' },
+        { level: 2, cost: 450, damage: 0, range: 15, cooldown: 0 },
+        { level: 3, cost: 650, damage: 0, range: 16, cooldown: 0 },
+        { level: 4, cost: 850, damage: 0, range: 17, cooldown: 0 },
+        { level: 5, cost: 1050, damage: 0, range: 18, cooldown: 0 },
+      ],
+      shiny: [
+        { level: 1, cost: 400, damage: 0, range: 15, cooldown: 0, attackType: '[Support]' },
+        { level: 2, cost: 450, damage: 0, range: 15, cooldown: 0 },
+        { level: 3, cost: 650, damage: 0, range: 16, cooldown: 0 },
+        { level: 4, cost: 850, damage: 0, range: 17, cooldown: 0 },
+        { level: 5, cost: 1050, damage: 0, range: 18, cooldown: 0 },
+      ]
+    },
+    history: [
+        { date: '10/19/25', change: 'Introduced' }
+    ]
+  },
   101: {
     id: 101,
     passives: [
@@ -242,6 +270,32 @@ export const UNIT_DETAILS: Record<number, UnitDetails> = {
         { level: 3, cost: 1050, damage: 88, range: 26, cooldown: 2.6 },
         { level: 4, cost: 1450, damage: 110, range: 28, cooldown: 2.4 },
         { level: 5, cost: 1850, damage: 132, range: 28, cooldown: 2.4 },
+      ]
+    },
+    history: [
+        { date: '10/19/25', change: 'Introduced' }
+    ]
+  },
+  111: {
+    id: 111,
+    passives: [
+      {
+        name: 'Birthday Boy',
+        description: 'Provides a 3% buff to damage, range, and cooldown to every unit in its radius.'
+      }
+    ],
+    stats: {
+      regular: [
+        { level: 1, cost: 400, damage: 0, range: 15, cooldown: 0, attackType: '[Support]' },
+        { level: 2, cost: 600, damage: 0, range: 16, cooldown: 0 },
+        { level: 3, cost: 800, damage: 0, range: 17, cooldown: 0 },
+        { level: 4, cost: 1050, damage: 0, range: 18, cooldown: 0 },
+      ],
+      shiny: [
+        { level: 1, cost: 400, damage: 0, range: 15, cooldown: 0, attackType: '[Support]' },
+        { level: 2, cost: 600, damage: 0, range: 16, cooldown: 0 },
+        { level: 3, cost: 800, damage: 0, range: 17, cooldown: 0 },
+        { level: 4, cost: 1050, damage: 0, range: 18, cooldown: 0 },
       ]
     },
     history: [

@@ -90,7 +90,7 @@ const UnitDetailModal: React.FC<UnitDetailModalProps> = ({ unit, isOpen, onClose
       onClick={handleClose}
     >
       <div 
-        className={`relative bg-background-med p-4 border-2 border-white w-full font-pixel transition-all duration-300 ${showDetails ? 'max-w-md' : 'max-w-xs'}`}
+        className={`relative bg-background-med p-3 border-2 border-white w-full font-pixel transition-all duration-300 ${showDetails ? 'max-w-md' : 'max-w-xs'}`}
         onClick={(e) => e.stopPropagation()}
       >
         <button 
@@ -102,12 +102,12 @@ const UnitDetailModal: React.FC<UnitDetailModalProps> = ({ unit, isOpen, onClose
           X
         </button>
 
-        <div className="flex items-center gap-4">
-            <div className="w-16 h-16 p-1 bg-black border-2 border-white flex-shrink-0">
+        <div className="flex items-center gap-3">
+            <div className="w-14 h-14 p-1 bg-black border-2 border-white flex-shrink-0">
                 <img src={unit.image} alt={unit.name} className="w-full h-full object-contain" />
             </div>
             <div className="text-left flex-grow">
-                <h2 className="text-xl text-white uppercase">{unit.name}</h2>
+                <h2 className="text-lg text-white uppercase">{unit.name}</h2>
                 <div className="flex items-center gap-2 mt-2">
                   <div className={`px-2 py-0.5 border-2 ${rarityStyles.border}`}>
                     <p className={`text-xs uppercase ${rarityStyles.text}`}>{unit.rarity}</p>
@@ -120,13 +120,13 @@ const UnitDetailModal: React.FC<UnitDetailModalProps> = ({ unit, isOpen, onClose
             </div>
         </div>
 
-        <div className="border-t-2 border-white my-4"></div>
+        <div className="border-t-2 border-white my-3"></div>
         
-        <p className="text-white text-base leading-tight uppercase">{unit.description}</p>
+        <p className="text-white text-sm leading-tight uppercase">{unit.description}</p>
         
         {unitDetails && (
           <>
-            <div className="border-t-2 border-white my-4"></div>
+            <div className="border-t-2 border-white my-3"></div>
             {showDetails ? (
               <div className="animate-fadeIn">
                 <div className="modal-details-container">
@@ -162,10 +162,10 @@ const UnitDetailModal: React.FC<UnitDetailModalProps> = ({ unit, isOpen, onClose
                       </div>
                   )}
                 </div>
-                <button onClick={() => setShowDetails(false)} className="pixel-button-yellow w-full mt-4">Скрыть характеристики</button>
+                <button onClick={() => setShowDetails(false)} className="pixel-button pixel-button-yellow w-full mt-3 !py-1 !px-2 !text-sm">Скрыть характеристики</button>
               </div>
             ) : (
-              <button onClick={() => setShowDetails(true)} className="pixel-button-green w-full">Показать характеристики</button>
+              <button onClick={() => setShowDetails(true)} className="pixel-button pixel-button-green w-full !py-1 !px-2 !text-sm">Показать характеристики</button>
             )}
           </>
         )}
