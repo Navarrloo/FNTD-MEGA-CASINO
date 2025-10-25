@@ -1,8 +1,14 @@
 
 export enum Rarity {
+  // FIX: Add 'Common' rarity to fix errors in constants.ts and CasinoPage.tsx
   Common = 'Common',
+  Uncommon = 'Uncommon',
   Rare = 'Rare',
   Epic = 'Epic',
+  Mythic = 'Mythic',
+  Secret = 'Secret',
+  Nightmare = 'Nightmare',
+  Hero = 'Hero',
   Legendary = 'Legendary'
 }
 

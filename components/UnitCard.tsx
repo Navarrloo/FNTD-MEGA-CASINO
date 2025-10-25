@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Unit, Rarity } from '../types';
 
@@ -8,14 +9,25 @@ interface UnitCardProps {
 
 const getRarityColor = (rarity: Rarity): string => {
   switch (rarity) {
+    // FIX: Add case for Common rarity
     case Rarity.Common:
       return 'bg-gray-500';
+    case Rarity.Uncommon:
+      return 'bg-green-500';
     case Rarity.Rare:
       return 'bg-blue-500';
     case Rarity.Epic:
       return 'bg-purple-500';
+    case Rarity.Mythic:
+        return 'bg-yellow-400';
+    case Rarity.Secret:
+        return 'bg-red-500';
+    case Rarity.Nightmare:
+        return 'bg-indigo-800';
+    case Rarity.Hero:
+        return 'bg-yellow-200';
     case Rarity.Legendary:
-      return 'bg-yellow-500';
+      return 'bg-orange-500';
     default:
       return 'bg-gray-600';
   }

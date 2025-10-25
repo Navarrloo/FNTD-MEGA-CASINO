@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Unit, Rarity } from '../types';
 import { BALANCE_ICON } from '../constants';
@@ -10,14 +11,25 @@ interface UnitDetailModalProps {
 
 const getRarityStyles = (rarity: Rarity): { text: string; border: string; bg: string } => {
   switch (rarity) {
+    // FIX: Add case for Common rarity
     case Rarity.Common:
       return { text: 'text-gray-300', border: 'border-gray-400', bg: 'bg-gray-700/50' };
+    case Rarity.Uncommon:
+      return { text: 'text-green-300', border: 'border-green-400', bg: 'bg-green-800/50' };
     case Rarity.Rare:
       return { text: 'text-blue-300', border: 'border-blue-400', bg: 'bg-blue-800/50' };
     case Rarity.Epic:
       return { text: 'text-purple-300', border: 'border-purple-400', bg: 'bg-purple-800/50' };
-    case Rarity.Legendary:
+    case Rarity.Mythic:
       return { text: 'text-yellow-300', border: 'border-yellow-400', bg: 'bg-yellow-700/50' };
+    case Rarity.Secret:
+        return { text: 'text-red-300', border: 'border-red-400', bg: 'bg-red-800/50' };
+    case Rarity.Nightmare:
+        return { text: 'text-indigo-300', border: 'border-indigo-400', bg: 'bg-indigo-900/50' };
+    case Rarity.Hero:
+        return { text: 'text-yellow-200', border: 'border-yellow-200', bg: 'bg-yellow-500/50' };
+    case Rarity.Legendary:
+      return { text: 'text-orange-300', border: 'border-orange-400', bg: 'bg-orange-800/50' };
     default:
       return { text: 'text-gray-300', border: 'border-gray-400', bg: 'bg-gray-700/50' };
   }
